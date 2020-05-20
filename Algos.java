@@ -53,7 +53,7 @@ public class Algos {
 
     private static int numberOfChoix;
 
-
+    // Exécute l'algorithme en profondeur sur les différents scénarios
     public static void execAlgsProfondeur() {
         numberOfChoix = 0;
         execAlgProfondeurRecurs(listSituationsWalter.get(0));
@@ -75,6 +75,7 @@ public class Algos {
     }
 
 
+    // Exécute l'algorithme en profondeur sur les différents scénarios
     private static void execAlgProfondeurRecurs(Situation currentSituation) {
         for (Choix c : currentSituation.getListChoix()) {
             if (!isCasParticulier(c)) {
@@ -87,27 +88,32 @@ public class Algos {
     }
 
 
+    // Teste si nous sommes sur un des cas particulier de nos scénarios
     private static boolean isCasParticulier(Choix choix) {
         return choix.getNomChoix().substring(choix.getNomChoix().length() -1).equals("3") && (isCasParticulierJesse(choix) || isCasParticulierHank(choix));
     }
 
 
+    // Teste si nous sommes sur le cas particulier du scénario de Jesse
     private static boolean isCasParticulierJesse(Choix choix) {
         return choix.getIdScenario().equals("scenario_jesse");
     }
 
 
+    // Teste si nous sommes sur le cas particulier du scénario de Hank
     private static boolean isCasParticulierHank(Choix choix) {
         return choix.getIdScenario().equals("scenario_hank") && choix.getNomChoix().equals("C1.2.1.3");
     }
 
 
+    // Initialise les listes et récupérère les données dans la base de données
     public static void execAlgAnalyse() {
         initializeLists();
         getDatas();
     }
 
 
+    // Initialise les listes
     private static void initializeLists() {
         listSituationsWalter = new ArrayList<Situation>(Collections.nCopies(17, null));
         listChoixWalter = new ArrayList<Choix>();
@@ -127,6 +133,7 @@ public class Algos {
     }
 
 
+    // Récupérère les données dans la base de données
     private static void getDatas() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -154,6 +161,7 @@ public class Algos {
     }
 
 
+    // Traite les situations ayant 2 choix (soit toutes les situations)
     private static void treatSituations2ChoixDatas(ResultSet resultSet) {
         try {
             while (resultSet.next()) {
@@ -188,6 +196,7 @@ public class Algos {
     }
 
 
+    // Ajoute aux listes de situations de chaque scénario les situations récupérées sur la base de données
     private static void addToLists2Choix(ResultSet resultSet, List<Situation> listSituations, List<Choix> listChoix, List<Choix> listChoixToAdd, Choix choix1, Choix choix2) {
         try {
             if (listSituations.get(resultSet.getInt(2)) != null)
@@ -207,6 +216,7 @@ public class Algos {
     }
 
 
+    // Set la valeur de "nextSituation" des choix récupérés sur la abse de données
     private static void setNextSituation2Choix(List<Situation> listSituations, List<Choix> listChoix, ResultSet resultSet, Choix choix, int numColumn) {
         try {
             if (resultSet.getInt(numColumn) != 0) {
@@ -227,6 +237,7 @@ public class Algos {
     }
 
 
+    // Traite les 3èmes choix non traités dans les cas où il y a 3 choix
     private static void treatSituations3ChoixDatas(ResultSet resultSet) {
         try {
             while (resultSet.next()) {
@@ -263,6 +274,7 @@ public class Algos {
     }
 
     
+    // Applique la fonction "addResultsToList()" sur chacun des scénarios
     private static void treatResultsDatas(ResultSet resultSet) {
         try {
             while (resultSet.next()) {
@@ -293,6 +305,7 @@ public class Algos {
     }
 
 
+    // Trie les listes de chaque scénario par ordre décroissants
     private static void sortAllLists() {
         listChoixWalter = sortListChoix(listChoixWalter);
         sortedMostFrequentPathsWalter = sortMostFrequentPathsList(mostFrequentPathsWalter);
@@ -308,6 +321,7 @@ public class Algos {
     }
 
 
+    // Trie la liste d'un scénario
     private static List<Choix> sortListChoix(List<Choix> listChoix) {
         List<Choix> sortedList = new ArrayList<Choix>();
         
@@ -331,6 +345,7 @@ public class Algos {
     }
 
 
+    // Trie la liste des chemins les plus empruntés d'un scénario particulier dans l'ordre décroissant
     private static List<Pair<List<Choix>,Integer>> sortMostFrequentPathsList(HashMap<Pair<List<Choix>, Integer>, Integer> listPaths) {
         List<Pair<List<Choix>,Integer>> sortedList = new ArrayList<Pair<List<Choix>,Integer>>();
         
@@ -359,6 +374,7 @@ public class Algos {
     }
 
 
+    // Ajoute les résultats des joueurs récupérés sur la base de données dans une liste de résultats du scénario respectif
     private static void addResultsToList(ResultSet resultSet, HashMap<Pair<List<Choix>, Integer>, Integer> listResults, List<Choix> listChoix) {
         try {
             boolean hasToCreateNew = true;
@@ -405,6 +421,7 @@ public class Algos {
     }
 
 
+    // Utilisé afin de récupérer le nombre d'un choix d'un joueur pour un tupple de la requête récupérant les résultats sur la base de données
     private static int getSizePathFromResultSet(ResultSet resultSet) {
         int size = 0;
         int i = 3;
@@ -422,6 +439,7 @@ public class Algos {
     }
 
 
+    // Création d'une Pair avec une liste de choix et sa taille
     private static Pair<List<Choix>, Integer> getResultInPair(ResultSet resultSet, List<Choix> listChoix) {
         List<Choix> listResult = new ArrayList<Choix>();
         int i = 3;
@@ -444,6 +462,7 @@ public class Algos {
     }
 
 
+    // Récupération d'un objet Choix dans la liste des différents choix d'un scénario en fonction de son nom en String
     private static Choix getChoixFromName(String name, List<Choix> listChoix) {
         Choix choix = null;
 
@@ -457,6 +476,7 @@ public class Algos {
     }
 
 
+    // Affichage des choix réalisés par les joueurs en considérant un choix réalisé auparavant
     public static boolean getChancesChoixKnowingAnotherChoix(String strChoix1, String idScenario) {
         List<Choix> listChoix = null;
         List<Pair<List<Choix>,Integer>> listPaths = null;
@@ -566,6 +586,7 @@ public class Algos {
     }
 
 
+    // Trie la liste de Pair obtenue dans la fonction "getChancesChoixKnowingAnotherChoix()" et contenant des choix et le nombre de fois qu'ils ont été réalisés
     private static List<MyPair> sortListPairPath(List<MyPair> listChoix) {
         List<MyPair> sortedList = new ArrayList<MyPair>();
         
@@ -589,6 +610,7 @@ public class Algos {
     }
 
 
+    // Affiche les chemins les plus fréquemment empruntés par les joueurs sur chaque scénario
     private static void printMostFrequentPathsAllScenarios() {
         printMostFrequentPath(sortedMostFrequentPathsWalter, "Walter");
         printMostFrequentPath(sortedMostFrequentPathsJesse, "Jesse");
@@ -597,6 +619,7 @@ public class Algos {
     }
 
 
+    // Affiche les chemins les plus fréquemment empruntés par les joueurs pour un scénario en particulier
     private static void printMostFrequentPath(List<Pair<List<Choix>, Integer>> mostFrequentPaths, String scenario) {
         for (Pair<List<Choix>,Integer> p : mostFrequentPaths) {
             String strToPrint = "Chemin scénario " + scenario + " : ";
@@ -613,6 +636,7 @@ public class Algos {
     }
 
 
+    // Affiche les choix les plus fréquemment réalisés par les joueurs sur chaque scénario
     private static void printChoixFromAllScenarios() {
         printChoix(listChoixWalter, "Walter");
         printChoix(listChoixJesse, "Jesse");
@@ -621,6 +645,7 @@ public class Algos {
     }
 
 
+    // Affiche les choix les plus fréquemment réalisés par les joueurs pour un scénario en particulier
     private static void printChoix(List<Choix> listChoix, String scenario) {
         for (Choix c : listChoix)
             System.out.println("Choix scénario " + scenario + " : " + c.getNomChoix() + " -> " + c.getNbFoisChoisi());
@@ -629,6 +654,7 @@ public class Algos {
     }
 
 
+    // Affiche les données des choix les plus empruntés et des choix les plus réalisés pour chaque scénario
     public static void printDatas() {
         printMostFrequentPathsAllScenarios();
         printChoixFromAllScenarios();
